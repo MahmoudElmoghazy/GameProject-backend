@@ -2,10 +2,10 @@
 
 namespace App\Nova;
 
-use Faker\Core\Number;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class QuestionRating extends Resource
