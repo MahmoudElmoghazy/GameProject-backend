@@ -10,6 +10,7 @@ class GameQuestion extends Pivot
 {
     use  HasFactory;
 
+    protected $table= 'game_questions';
     /**
      * The attributes that are mass assignable.
      *

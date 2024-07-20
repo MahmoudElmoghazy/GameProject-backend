@@ -10,6 +10,7 @@ class UserPackage extends Pivot
 {
     use  HasFactory;
 
+    protected $table = 'user_packages';
     /**
      * The attributes that are mass assignable.
      *

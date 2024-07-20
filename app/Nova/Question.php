@@ -53,7 +53,7 @@ class Question extends Resource
                 'true_false' => 'True False',
                 'range' => 'Range'
             ])->rules('required'),
-            BelongsTo::make('Right Answer', 'right_answer', Answer::class),
+            BelongsTo::make('Right Answer', 'rightAnswer', Answer::class),
             BelongsTo::make('Category', 'category', Category::class),
             BelongsTo::make('Difficulty', 'difficulty', Difficulty::class),
             Image::make('Image', 'image')->disk('public')->path('questions'),
