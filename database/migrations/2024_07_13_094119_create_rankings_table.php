@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('score');
             $table->string('image');
+            $table->unsignedInteger('user_id');
             $table->timestamps();
         });
     }

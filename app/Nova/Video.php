@@ -44,7 +44,7 @@ class Video extends Resource
         return [
             ID::make()->sortable(),
             Text::make('title', 'title')->rules('required','max:255'),
-            BelongsTo::make('video_package_id', 'video_package_id', VideoPackage::class),
+            BelongsTo::make('videoPackage', 'videoPackage', VideoPackage::class),
         ];
     }
 

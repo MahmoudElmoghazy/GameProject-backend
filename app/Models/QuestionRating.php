@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class QuestionRating extends Model
 {
     use  HasFactory;
+    protected $table = 'questions_ratings';
 
     /**
      * The attributes that are mass assignable.

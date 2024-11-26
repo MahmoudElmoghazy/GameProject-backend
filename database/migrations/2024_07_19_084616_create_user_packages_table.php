@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('package_id');
-            $table->dateTime('start_time');
-            $table->dateTime('expire_time');
+            $table->enum('status',['paid','unpaid','pending']);
+            $table->integer('amount');
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->unsignedBigInteger('video_package_id');
+            $table->string('video_url');
             $table->timestamps();
         });
     }

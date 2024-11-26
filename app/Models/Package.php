@@ -26,9 +26,4 @@ class Package extends Model
         return $this->hasMany(UserPackage::class);
     }
 
-    public function packagePermission(): HasMany
-    {
-        return $this->hasMany(PackagePermission::class);
-    }
-
 }

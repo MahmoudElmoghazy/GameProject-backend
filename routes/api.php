@@ -1,7 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\MemesController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\QuickChatController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +19,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('guest')->group( function (){
+    Route::controller(RegisterController::class)->group(function(){
+        Route::post('register', 'register');
+        Route::post('login', 'login');
+        Route::post('activate/email', 'activateEmail');
+    });
+});
+Route::middleware('auth:sanctum')->group( function () {
+    Route::controller( GameController::class)->group(function(){
+        Route::get('/games', 'list');
+        Route::post('/games/create', 'create');
+    });
+    Route::controller( GameController::class)->group(function(){
+        Route::get('/games', 'list');
+        Route::post('/games/create', 'create');
+    });
+    Route::controller( MemesController::class)->group(function(){
+        Route::get('/memes', 'list');
+    });
+    Route::controller( QuickChatController::class)->group(function(){
+        Route::get('/quick-chat', 'list');
+    });
+    Route::controller( PurchaseController::class)->group(function(){
+        Route::post('/purchase', 'purchase');
+        Route::post('/purchase/coins', 'purchaseCoins');
+        Route::post('/subscribe/video/package', 'subscribe');
+    });
+
 });

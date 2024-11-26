@@ -50,7 +50,6 @@ class Package extends Resource
             Number::make('Price', 'price')->rules('required'),
             Image::make('Image', 'image')->disk('public')->path('packages'),
             BelongsToMany::make('User Packages', 'userPackage', UserPackage::class),
-            HasMany::make('Package Permissions', 'packagePermission', PackagePermission::class)
         ];
     }
 
