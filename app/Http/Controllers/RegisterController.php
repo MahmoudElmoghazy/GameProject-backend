@@ -14,7 +14,6 @@ class RegisterController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        dd($request->all());
         //create user add random code that is unique for activation token and return success message
         try {
             $user = new User();
@@ -26,7 +25,7 @@ class RegisterController extends Controller
 
             $user->avatar = $request->file('avatar')->store('avatars');
             $user->save();
-            Mail::to($user->email)->send(new ActivationEmail(route('activation.verify', ['token' => $user->activation_token])));
+/*            Mail::to($user->email)->send(new ActivationEmail(route('activation.verify', ['token' => $user->activation_token])));*/
             return response()->json(['message' => 'User created successfully'], 200);
         }catch (\Exception $e) {
             return response()->json(['message' => 'User not created'], 500);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MemesController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuickChatController;
@@ -22,9 +23,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group( function (){
     Route::controller(RegisterController::class)->group(function(){
         Route::post('register', 'register');
-        Route::post('login', 'login');
+
         Route::post('activate/email', 'activateEmail');
     });
+
+    Route::controller(LoginController::class)->group(function(){
+        Route::post('login', 'login');
+    });
+
 });
 Route::middleware('auth:sanctum')->group( function () {
     Route::controller( GameController::class)->group(function(){
