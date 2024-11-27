@@ -29,6 +29,8 @@ Route::middleware('guest')->group( function (){
 
     Route::controller(LoginController::class)->group(function(){
         Route::post('login', 'login');
+        Route::post('/forget-password',  'forgetPassword');
+        Route::post('/reset-password', 'resetPassword');
     });
 
 });
