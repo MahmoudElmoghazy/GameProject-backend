@@ -23,6 +23,7 @@ class GameController extends Controller
             $game->code = $request->code;
             $game->difficulty_id = $request->difficulty_id;
             $game->time_for_each_question = $request->time_for_each_question;
+            $game->category_id = $request->category_id;
             $game->save();
             $questions = Question::where([['category_id', $request->category_id],['difficulty_id',$request->difficulty_id]])->inRandomOrder()->limit($request->no_of_questions)->get();
             $game->gameQuestions()->createMany($questions->toArray());
