@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('no_of_players');
             $table->string('code')->nullable();
             $table->unsignedBigInteger('difficulty_id');
+            $table->unsignedBigInteger('category_id');
             $table->integer('time_for_each_question');
             $table->timestamps();
         });
