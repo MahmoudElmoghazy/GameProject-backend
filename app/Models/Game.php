@@ -21,7 +21,8 @@ class Game extends Model
         'no_of_players',
         'code',
         'difficulty_id',
-        'time_for_each_question'
+        'time_for_each_question',
+        'category_id'
     ];
 
     public function difficulty(): BelongsTo

@@ -8,7 +8,7 @@ class createGameRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     public function rules(): array
@@ -19,6 +19,7 @@ class createGameRequest extends FormRequest
             'code'=>'string',
             'difficulty_id'=>'required|exists:difficulties,id',
             'category_id'=>'required|exists:categories,id',
+            'time_for_each_question'=>'required|integer'
         ];
     }
 }

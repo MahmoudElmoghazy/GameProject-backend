@@ -15,7 +15,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.8",
-        "laravel/vapor-cli": "*",
+        "laravel/vapor-cli": "^1.65",
         "laravel/vapor-core": "^2.37",
         "sereny/nova-permissions": "^1.6"
     },

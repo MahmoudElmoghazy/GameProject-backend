@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DifficultyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MemesController;
@@ -30,8 +32,9 @@ Route::middleware('guest')->group( function (){
     Route::controller(LoginController::class)->group(function(){
         Route::post('login', 'login');
         Route::post('/forget-password',  'forgetPassword');
-        Route::post('/reset-password', 'resetPassword');
+        Route::post('/reset-password', 'resetPassword')->name('password.reset');
     });
+
 
 });
 Route::middleware('auth:sanctum')->group( function () {
@@ -39,9 +42,11 @@ Route::middleware('auth:sanctum')->group( function () {
         Route::get('/games', 'list');
         Route::post('/games/create', 'create');
     });
-    Route::controller( GameController::class)->group(function(){
-        Route::get('/games', 'list');
-        Route::post('/games/create', 'create');
+    Route::controller( CategoryController::class)->group(function(){
+        Route::get('/categories', 'list');
+    });
+    Route::controller( DifficultyController::class)->group(function(){
+        Route::get('/difficulties', 'list');
     });
     Route::controller( MemesController::class)->group(function(){
         Route::get('/memes', 'list');
