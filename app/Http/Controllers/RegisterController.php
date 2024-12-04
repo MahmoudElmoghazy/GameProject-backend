@@ -23,8 +23,10 @@ class RegisterController extends Controller
                 $token = Str::random(60);
             } while (User::where('activation_token', $token)->exists());
 
-            $user->avatar = $request->file('avatar')->store('avatars');
-            $user->save();
+            if($request->has('avatar')){
+                $user->avatar = $request->file('avatar')->store('avatars');
+                $user->save();
+            }
 /*            Mail::to($user->email)->send(new ActivationEmail(route('activation.verify', ['token' => $user->activation_token])));*/
             return response()->json(['message' => 'User created successfully'], 200);
         }catch (\Exception $e) {
