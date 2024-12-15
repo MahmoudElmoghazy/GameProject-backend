@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,7 @@ class LoginController extends Controller
         if(auth()->attempt($request->all())){
             $user = auth()->user();
             $token = $user->createToken("Login Token")->plainTextToken;
-            return response()->json(['user' => $user, 'token' => $token], 200);
+            return response()->json(['user' => UserCollection::make($user), 'token' => $token], 200);
         }else{
             return response()->json(['message' => 'Unauthorized'], 401);
         }

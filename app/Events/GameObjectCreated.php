@@ -1,6 +1,7 @@
 <?php
 namespace App\Events;
 
+use App\Http\Resources\GameCollection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -18,7 +19,7 @@ class GameObjectCreated implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('games');
+        return new Channel('GameCreated');
     }
 
     public function broadcastWith()

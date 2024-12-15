@@ -50,4 +50,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasRole('admin');
     }
+
+
+    protected $appends = ['avatar_path'];
+
+    public function getAvatarPathAttribute()
+    {
+        return ($this->avatar ? (env('APP_URL') . '/storage/' . $this->avatar ): null);
+    }
 }

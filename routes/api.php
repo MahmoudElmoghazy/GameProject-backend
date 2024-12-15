@@ -41,6 +41,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::controller( GameController::class)->group(function(){
         Route::get('/games', 'list');
         Route::post('/games/create', 'create');
+        Route::post('join/game/{game}','joinGame');
+        Route::post('leave/game/{game}','leaveGame');
+
     });
     Route::controller( CategoryController::class)->group(function(){
         Route::get('/categories', 'list');

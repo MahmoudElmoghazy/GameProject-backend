@@ -23,7 +23,7 @@ class GameController extends Controller
 
     public function list()
     {
-        return GameCollection::collection(Game::with('owner')->where('status','pending')->get());
+        return GameCollection::collection(Game::with('owner','category')->where('status','pending')->get());
     }
 
     public function create(createGameRequest $request)
@@ -35,11 +35,13 @@ class GameController extends Controller
             $game->difficulty_id = $request->difficulty_id;
             $game->time_for_each_question = $request->time_for_each_question;
             $game->category_id = $request->category_id;
+            $game->user_id= auth()->id();
             $game->save();
             $questions = Question::where([['category_id', $request->category_id],['difficulty_id',$request->difficulty_id]])->inRandomOrder()->limit($request->no_of_questions)->get();
-            broadcast(new GameObjectCreated($game));
-            $game->gameQuestions()->createMany($questions->toArray());
-            $games =  GameCollection::collection(Game::where('status','pending')->get());
+            $game->gameQuestions()->createMany($questions->map(function($question){
+                return ['question_id'=>$question->id];
+            })->toArray());
+            $games =  Game::where('status','pending')->get()->toArray();
             $game->load('gameQuestions.question.answers','owner');
             broadcast(new GameObjectCreated($games));
             return GameCollection::make($game);
@@ -60,6 +62,7 @@ class GameController extends Controller
         }
         $game->save();
         $user = auth()->user();
+        $game->
         broadcast(new PlayerJoined($user,$game));
         return response()->json(['message' => 'joined successfully'], 200);
     }
