@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.8",
         "laravel/vapor-cli": "^1.65",
         "laravel/vapor-core": "^2.37",
+        "pusher/pusher-php-server": "^7.2",
         "sereny/nova-permissions": "^1.6"
     },
     "require-dev": {

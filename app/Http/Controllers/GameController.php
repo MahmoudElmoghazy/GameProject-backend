@@ -2,17 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CorrectAnswer;
+use App\Events\GameFinished;
+use App\Events\GameObjectCreated;
+use App\Events\GameStarted;
+use App\Events\NextQuestion;
+use App\Events\PlayerJoined;
+use App\Events\PlayerLeft;
+use App\Events\WrongAnswer;
 use App\Http\Requests\createGameRequest;
 use App\Http\Resources\GameCollection;
+use App\Jobs\PodcastNextQuestion;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\Answer;
+use Illuminate\Http\JsonResponse;
 
 class GameController extends Controller
 {
 
     public function list()
     {
-        return GameCollection::collection(Game::all());
+        return GameCollection::collection(Game::with('owner')->where('status','pending')->get());
     }
 
     public function create(createGameRequest $request)
@@ -26,8 +37,68 @@ class GameController extends Controller
             $game->category_id = $request->category_id;
             $game->save();
             $questions = Question::where([['category_id', $request->category_id],['difficulty_id',$request->difficulty_id]])->inRandomOrder()->limit($request->no_of_questions)->get();
+            broadcast(new GameObjectCreated($game));
             $game->gameQuestions()->createMany($questions->toArray());
-            $game->load('gameQuestions.question.answers');
+            $games =  GameCollection::collection(Game::where('status','pending')->get());
+            $game->load('gameQuestions.question.answers','owner');
+            broadcast(new GameObjectCreated($games));
             return GameCollection::make($game);
     }
+
+    public function joinGame(Game $game): JsonResponse
+    {
+        if($game->status != 'pending'){
+            return response()->json(['message'=>'Game has already started or finished'], 400);
+        }
+        $game->increment('no_of_joined_players');
+        if($game->no_of_joined_players == $game->no_of_players){
+            $game->status = 'started';
+            $game->started_at = now();
+            $game->save();
+            broadcast(new GameStarted($game));
+            PodcastNextQuestion::dispatch($game);
+        }
+        $game->save();
+        $user = auth()->user();
+        broadcast(new PlayerJoined($user,$game));
+        return response()->json(['message' => 'joined successfully'], 200);
+    }
+
+    public function leaveGame(Game $game): JsonResponse
+    {
+        if($game->status == 'pending' || $game->status == 'started'){
+            $game->decrement('no_of_joined_players');
+            $game->save();
+            $user = auth()->user();
+            broadcast(new PlayerLeft($user,$game));
+            return response()->json(['message' => 'left successfully'], 200);
+        }else{
+            return response()->json(['message'=>'Game has already finished'], 400);
+        }
+    }
+
+    public function answerQuestion(Game $game,Answer $answer,Question $question)
+    {
+        if($game->status == 'started'){
+            $game->gameQuestions()->where('question_id',$question->id)->first();
+            if($game->current_question != $question->id){
+                return response()->json(['message'=>'This question is not the current question'], 400);
+            }
+            $user= auth()->user();
+            if($answer->id == $question->right_answer_id){
+                broadcast(new CorrectAnswer($game,$question,$answer,$user));
+                $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
+                Broadcast(new NextQuestion($game,$next_question));
+                if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
+                    $game->status = 'finished';
+                    $game->save();
+                    broadcast(new GameFinished($game));
+                }
+            }
+            broadcast(new WrongAnswer($game,$question,$answer,$user));
+        }else{
+            return response()->json(['message'=>'Game has not started yet or finished'], 400);
+        }
+    }
+
 }

@@ -21,6 +21,7 @@ class GameCollection extends JsonResource
             'no_of_players'=>$this->no_of_players,
             'code'=>$this->code,
             'difficulty_id'=>$this->difficulty_id,
+            'owner_id'=> $this->owner->id,
             'time_for_each_question'=>$this->time_for_each_question,
             'category_id'=>$this->category_id,
             'gameQuestions'=> GameQuestionsCollection::collection($this->gameQuestions)

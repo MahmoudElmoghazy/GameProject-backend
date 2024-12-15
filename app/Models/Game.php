@@ -22,7 +22,9 @@ class Game extends Model
         'code',
         'difficulty_id',
         'time_for_each_question',
-        'category_id'
+        'category_id',
+        'user_id',
+        'started_at'
     ];
 
     public function difficulty(): BelongsTo
@@ -33,5 +35,15 @@ class Game extends Model
     public function gameQuestions(): HasMany
     {
         return $this->hasMany(GameQuestion::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }
