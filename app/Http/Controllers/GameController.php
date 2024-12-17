@@ -42,7 +42,7 @@ class GameController extends Controller
                 return ['question_id'=>$question->id];
             })->toArray());
             $game->load('owner');
-            broadcast(new GameObjectCreated($game->toArray()));
+            broadcast(new GameObjectCreated($game));
             return GameCollection::make($game);
     }
 
