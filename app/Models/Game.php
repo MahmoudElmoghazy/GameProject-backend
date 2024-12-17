@@ -56,6 +56,6 @@ class Game extends Model
 
     public function users()
     {
-
+        return $this->BelongsToMany(User::class,'game_users','user_id','game_id');
     }
 }

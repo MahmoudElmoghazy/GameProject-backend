@@ -50,5 +50,14 @@ class CategoriesSeeder extends Seeder
                 $question->answers()->create(['title'=>$answer]);
             }
         }
+        $categories= Category::all();
+        foreach ($categories as $category ){
+            foreach ($questions as $question=>$answers){
+                $question=$category->questions()->create(['title'=>$question,'difficulty_id'=>1,'right_answer_id'=>1,'type'=>'mcq']);
+            foreach ($answers as $answer){
+                $question->answers()->create(['title'=>$answer]);
+            }
+            }
+        }
     }
 }

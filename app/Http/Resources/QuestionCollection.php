@@ -19,7 +19,6 @@ class QuestionCollection extends JsonResource
             'id'=>$this->id,
             'title'=>$this->title,
             'type'=>$this->type,
-            'right_answer_id'=>$this->right_answer_id,
             'category_id'=>$this->category_id,
             'image'=>$this->image,
             'start_range'=>$this->start_range,

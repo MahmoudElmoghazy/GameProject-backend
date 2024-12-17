@@ -11,11 +11,13 @@ class NextQuestion implements ShouldBroadcast
     use SerializesModels;
     public $gameObject;
     public $nextQuestion;
+    public $previousAnswer;
 
-    public function __construct($gameObject,$next_question)
+    public function __construct($gameObject,$next_question,$previous_answer=null)
     {
         $this->gameObject = $gameObject;
         $this->nextQuestion = $next_question;
+        $this->previousAnswer= $previous_answer;
     }
 
     public function broadcastOn()
@@ -25,8 +27,10 @@ class NextQuestion implements ShouldBroadcast
 
     public function broadcastWith()
     {
+        $this->nextQuestion->load('question.answers');
         return [
-            'next_question'=>QuestionCollection::make($this->nextQuestion),
+            'previous_answer' => $this->previousAnswer,
+            'next_question' => QuestionCollection::make($this->nextQuestion->question),
         ];
     }
 }

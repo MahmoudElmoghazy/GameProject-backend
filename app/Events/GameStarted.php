@@ -1,6 +1,7 @@
 <?php
 namespace App\Events;
 
+use App\Http\Resources\GameCollection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -24,7 +25,8 @@ class GameStarted implements ShouldBroadcast
     public function broadcastWith()
     {
         $next_question = $this->gameObject->gameQuestions->where('is_answered',false)->first();
-        $next_question->load('answers');
-        return ['game' => $this->gameObject,'next_question' => $next_question];
+        $this->gameObject->current_question = $next_question->question->id;
+        $this->gameObject->save();
+        return ['game' => GameCollection::make($this->gameObject),'next_question' => $next_question];
     }
 }

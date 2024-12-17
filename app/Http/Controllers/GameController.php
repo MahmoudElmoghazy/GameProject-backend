@@ -41,9 +41,8 @@ class GameController extends Controller
             $game->gameQuestions()->createMany($questions->map(function($question){
                 return ['question_id'=>$question->id];
             })->toArray());
-            $games =  Game::where('status','pending')->get()->toArray();
-            $game->load('gameQuestions.question.answers','owner');
-            broadcast(new GameObjectCreated($games));
+            $game->load('owner');
+            broadcast(new GameObjectCreated($game->toArray()));
             return GameCollection::make($game);
     }
 
@@ -53,17 +52,19 @@ class GameController extends Controller
             return response()->json(['message'=>'Game has already started or finished'], 400);
         }
         $game->increment('no_of_joined_players');
+        $game->save();
+        $user = auth()->user();
+        $game->users()->attach($user);
+        $game->load('users');
+        broadcast(new PlayerJoined($user,$game));
         if($game->no_of_joined_players == $game->no_of_players){
             $game->status = 'started';
             $game->started_at = now();
             $game->save();
+            $game->load('gameQuestions.question.answers');
             broadcast(new GameStarted($game));
             PodcastNextQuestion::dispatch($game);
         }
-        $game->save();
-        $user = auth()->user();
-        $game->
-        broadcast(new PlayerJoined($user,$game));
         return response()->json(['message' => 'joined successfully'], 200);
     }
 
@@ -73,6 +74,7 @@ class GameController extends Controller
             $game->decrement('no_of_joined_players');
             $game->save();
             $user = auth()->user();
+            $game->users()->detach($user);
             broadcast(new PlayerLeft($user,$game));
             return response()->json(['message' => 'left successfully'], 200);
         }else{
@@ -91,7 +93,9 @@ class GameController extends Controller
             if($answer->id == $question->right_answer_id){
                 broadcast(new CorrectAnswer($game,$question,$answer,$user));
                 $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
+                $game->current_question = $next_question->question_id;
                 Broadcast(new NextQuestion($game,$next_question));
+
                 if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                     $game->status = 'finished';
                     $game->save();
