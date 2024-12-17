@@ -24,6 +24,6 @@ class GameObjectCreated implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return GameCollection::make($this->gameObject);
+        return ['game'=>GameCollection::make($this->gameObject)];
     }
 }
