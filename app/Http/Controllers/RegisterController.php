@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserCollection;
 use App\Mail\ActivationEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class RegisterController extends Controller
             }
             $user->save();
             /*            Mail::to($user->email)->send(new ActivationEmail(route('activation.verify', ['token' => $user->activation_token])));*/
-            return response()->json(['message' => 'User created successfully'], 200);
+            return response()->json(['message' => 'User created successfully','user' => UserCollection::make($user)], 200);
         }catch (\Exception $e) {
             return response()->json(['message' => 'User not created'], 500);
         }
