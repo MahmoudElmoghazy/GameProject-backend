@@ -88,7 +88,6 @@ class GameController extends Controller
     public function answerQuestion(Game $game,Answer $answer,Question $question): JsonResponse
     {
         if($game->status == 'started'){
-            $question = $game->gameQuestions()->where('question_id',$question->id)->first();
             if($game->current_question != $question->id){
                 return response()->json(['message'=>'This question is not the current question'], 400);
             }
