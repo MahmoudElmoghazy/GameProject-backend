@@ -28,6 +28,7 @@ class RegisterController extends Controller
                 $user->avatar = $request->file('avatar')->store('avatars');
             }
             $user->save();
+            $user =User::find($user->id);
             /*            Mail::to($user->email)->send(new ActivationEmail(route('activation.verify', ['token' => $user->activation_token])));*/
             return response()->json(['message' => 'User created successfully','user' => UserCollection::make($user)], 200);
         }catch (\Exception $e) {
