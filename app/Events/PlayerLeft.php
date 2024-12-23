@@ -1,6 +1,7 @@
 <?php
 namespace App\Events;
 
+use App\Http\Resources\UserCollection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -27,7 +28,7 @@ class PlayerLeft implements ShouldBroadcast
     {
         return [
             'game' => $this->gameObject,
-            'user' => $this->user
+            'user' =>  UserCollection::make($this->user)
         ];
     }
 }

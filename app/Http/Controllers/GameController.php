@@ -77,6 +77,7 @@ class GameController extends Controller
             $game->save();
             $user = auth()->user();
             $game->users()->detach($user);
+            $game->load('users');
             broadcast(new PlayerLeft($user,$game));
             broadcast(new GameObjectUpdated($game));
             return response()->json(['message' => 'left successfully'], 200);
