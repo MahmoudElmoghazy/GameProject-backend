@@ -33,10 +33,8 @@ class CorrectAnswer implements ShouldBroadcast
     {
         $this->gameObject->gameQuestions()->where('question_id',$this->question->id)->update(['answered_by'=>$this->user->id ?? null]);
         return [
-            'game' => $this->gameObject,
             'user' => $this->user,
             'answer' => $this->answer,
-            'question' => $this->question,
         ];
     }
 }
