@@ -1,6 +1,7 @@
 <?php
 namespace App\Events;
 
+use App\Http\Resources\GameCollection;
 use App\Http\Resources\UserCollection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -27,7 +28,7 @@ class PlayerLeft implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'game' => $this->gameObject,
+            'game' => GameCollection::make($this->gameObject),
             'user' =>  UserCollection::make($this->user)
         ];
     }

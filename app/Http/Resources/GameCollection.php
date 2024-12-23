@@ -26,7 +26,10 @@ class GameCollection extends JsonResource
             'category_id'=>$this->category_id,
             'category_name'=>$this->category->name,
             'no_of_joined_players'=>$this->no_of_joined_players,
-            'owner_name' =>$this->owner->name
+            'owner_name' =>$this->owner->name,
+            'users' => $this->whenLoaded('users',function (){
+                return UserCollection::collection($this->users);
+            }),
         ];
     }
 }
