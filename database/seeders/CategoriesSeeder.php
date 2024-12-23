@@ -46,10 +46,11 @@ class CategoriesSeeder extends Seeder
         ];
         foreach ($questions as $question=>$answers){
             $category=Category::where('name','ثقافة عامة')->first();
-            $question=$category->questions()->create(['title'=>$question,'difficulty_id'=>1,'right_answer_id'=>1,'type'=>'mcq']);
+            $question=$category->questions()->create(['title'=>$question,'difficulty_id'=>1,'type'=>'mcq']);
             foreach ($answers as $answer){
                 $question->answers()->create(['title'=>$answer]);
             }
+            $question->update(['right_answer_id'=>$question->answers()->first()->id]);
         }
         $categories= Category::all();
         foreach ($categories as $category ){
@@ -58,6 +59,7 @@ class CategoriesSeeder extends Seeder
             foreach ($answers as $answer){
                 $question->answers()->create(['title'=>$answer]);
             }
+                $question->update(['right_answer_id'=>$question->answers()->first()->id]);
             }
         }
 
