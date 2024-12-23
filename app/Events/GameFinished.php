@@ -27,15 +27,17 @@ class GameFinished implements ShouldBroadcast
     {
         $scores = [];
         foreach ($this->gameObject->users as $user) {
-            $answeredQuestions= $this->gameObject->gameQuestions->where('answered_by', $user->id);
-            $score = $answeredQuestions->sum('score');
+            $answeredQuestionsScore = 0;
+            $answeredQuestions= $this->gameObject->gameQuestions()->where('answered_by', $user->id)->get();
+            $answeredQuestions->load('question.difficulty');
             $secs = 0;
-            foreach ($answeredQuestions->get as $answeredQuestion) {
+            foreach ($answeredQuestions as $answeredQuestion) {
+                    $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
                     $secs += $answeredQuestion->answered_at->diffInSeconds($answeredQuestion->sent_at);
             }
             $scores[] = [
                 'user' => $user->name,
-                'score' => $score,
+                'score' => $answeredQuestionsScore,
                 'time' => $secs,
                 'id' => $user->id,
             ];
