@@ -14,9 +14,9 @@ class DifficultiesSeeder extends Seeder
 
     public function run(): void
     {
-        Difficulty::create(['name'=>'easy']);
-        Difficulty::create(['name'=>'mid']);
-        Difficulty::create(['name'=>'hard']);
+        Difficulty::create(['name'=>'easy', 'score'=>10]);
+        Difficulty::create(['name'=>'mid', 'score'=>20]);
+        Difficulty::create(['name'=>'hard','score'=>30]);
 
     }
 }

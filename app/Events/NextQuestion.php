@@ -3,12 +3,15 @@ namespace App\Events;
 
 use App\Http\Resources\QuestionCollection;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NextQuestion implements ShouldBroadcast
+class NextQuestion implements ShouldBroadcast,ShouldQueue
 {
-    use SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
     public $gameObject;
     public $nextQuestion;
     public $previousAnswer;
@@ -28,6 +31,7 @@ class NextQuestion implements ShouldBroadcast
     public function broadcastWith()
     {
         $this->nextQuestion->load('question.answers');
+        $this->nextQuestion->update(['sent_at'=>now()]);
         return [
             'previous_answer' => $this->previousAnswer,
             'next_question' => QuestionCollection::make($this->nextQuestion->question),

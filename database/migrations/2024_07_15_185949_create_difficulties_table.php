@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('difficulties', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('score')->default(0);
             $table->timestamps();
         });
     }

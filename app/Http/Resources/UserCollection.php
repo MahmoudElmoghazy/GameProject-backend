@@ -19,7 +19,8 @@ class UserCollection extends JsonResource
             "id"            => $this->id,
             "name"          => $this->name,
             "email"         => $this->email,
-            "avatar"          => $this->avatar_path,
+            "avatar"        => $this->avatar_path,
+            "coins"         => $this->coins,
         ];
     }
 }

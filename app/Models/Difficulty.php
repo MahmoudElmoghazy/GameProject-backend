@@ -17,6 +17,7 @@ class Difficulty  extends Model
      */
     protected $fillable = [
         'name',
+        'score'
     ];
 
     public function questions(): HasMany

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('game_id');
             $table->unsignedBigInteger('question_id');
             $table->boolean('is_answered')->default(false);
+            $table->unsignedInteger('answered_by')->nullable();
+            $table->dateTime('answered_at')->nullable();
+            $table->dateTime('sent_at')->nullable();
             $table->timestamps();
         });
     }

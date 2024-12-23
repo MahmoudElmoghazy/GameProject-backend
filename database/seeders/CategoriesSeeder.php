@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Setting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -59,5 +60,7 @@ class CategoriesSeeder extends Seeder
             }
             }
         }
+
+        Setting::create(['key'=>'coins_per_game','value'=>100]);
     }
 }

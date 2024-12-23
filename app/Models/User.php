@@ -54,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $appends = ['avatar_path'];
 
-    public function getAvatarPathAttribute()
+    public function getavatarPathAttribute()
     {
         return ($this->avatar ? (env('APP_URL') . '/storage/' . $this->avatar ): null);
     }

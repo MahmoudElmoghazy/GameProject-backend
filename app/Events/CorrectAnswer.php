@@ -1,7 +1,6 @@
 <?php
 namespace App\Events;
 
-use App\Http\Resources\QuestionCollection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -27,11 +26,12 @@ class CorrectAnswer implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('games-answer-'.$this->gameObject->id);
+        return new Channel('games-correct-answer-'.$this->gameObject->id);
     }
 
     public function broadcastWith()
     {
+        $this->gameObject->where('question_id',$this->question->id)->update(['answered_by'=>$this->user->id]);
         return [
             'game' => $this->gameObject,
             'user' => $this->user,

@@ -24,6 +24,7 @@ class QuestionCollection extends JsonResource
             'start_range'=>$this->start_range,
             'end_range'=>$this->end_range,
             'difficulty_id'=>$this->difficulty_id,
+            'score'=>$this->difficulty->score,
             'answers' =>AnswerCollection::collection($this->answers),
         ];
     }

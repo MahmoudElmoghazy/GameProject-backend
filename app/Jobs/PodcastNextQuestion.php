@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\CorrectAnswer;
 use App\Events\GameFinished;
 use App\Events\NextQuestion;
 use App\Models\Game;
@@ -52,6 +53,8 @@ class PodcastNextQuestion implements ShouldQueue
                 $this->game->current_question = $next_question->question_id;
                 $this->game->save();
                 $this->game->load('gameQuestions.question.answers');
+                broadcast(new CorrectAnswer($this->game, $next_question,$previous_answer,null));
+                sleep(5);
                 broadcast(new NextQuestion($this->game, $next_question,$previous_answer));
                 sleep($no_of_secs);
             }
