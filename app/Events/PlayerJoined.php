@@ -28,7 +28,7 @@ class PlayerJoined implements ShouldBroadcast
     {
         return [
             'game' => $this->gameObject,
-            'user' => UserCollection::collection($this->user)
+            'user' => UserCollection::make($this->user)
         ];
     }
 }
