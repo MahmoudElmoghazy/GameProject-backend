@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Events\CorrectAnswer;
-use App\Events\GameFinished;
 use App\Events\NextQuestion;
 use App\Models\Game;
 use App\Models\Question;
@@ -13,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class PodcastNextQuestion implements ShouldQueue
+class NextQuestionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
