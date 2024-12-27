@@ -110,14 +110,14 @@ class GameController extends Controller
                 }
                 broadcast(new WrongAnswer($game,$question,$answer,$user));
             }else{
-                $no_of_secs_since_start = now()->diffInSeconds($this->game->created_at);
+                $no_of_secs_since_start = now()->diffInSeconds($game->created_at);
                 $answered_question=$game->gameQuestions->where('is_answered', true)->count();
                 $no_of_secs = $game->time_for_each_question;
                 if($no_of_secs_since_start >= $no_of_secs * $answered_question) {
                     $game->gameQuestions()->where('question_id', $game->current_question)->update(['is_answered' => true]);
                     $next_question = $game->gameQuestions()->where('is_answered', false)->first();
                     if($next_question){
-                        $previous_question = Question::find($this->game->current_question);
+                        $previous_question = Question::find($game->current_question);
                         $previous_answer =$previous_question->right_answer_id;
                         $game->current_question = $next_question->question_id;
                         $game->save();
