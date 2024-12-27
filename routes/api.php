@@ -47,6 +47,9 @@ Route::middleware('auth:sanctum')->group( function () {
 
     });
 
+    Route::controller(LoginController::class)->group(function(){
+        Route::get('/profile', 'showProfile');
+    });
     Route::controller( CategoryController::class)->group(function(){
         Route::get('/categories', 'list');
     });
