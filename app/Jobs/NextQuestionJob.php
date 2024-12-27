@@ -29,7 +29,6 @@ class NextQuestionJob implements ShouldQueue
         // Retrieve the models inside the handle method
         $game = Game::find($this->game_id);
         $next_question = Question::find($this->next_question_id);
-        $game->load('gameQuestions.question.answers');
 
         // Broadcast the event
         broadcast(new NextQuestion($game, $next_question));
