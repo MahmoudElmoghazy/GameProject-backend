@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\NextQuestion;
+use App\Events\NextQuestionUpdate;
 use App\Models\Game;
 use App\Models\Question;
 use Illuminate\Bus\Queueable;
@@ -31,6 +32,6 @@ class NextQuestionJob implements ShouldQueue
         $next_question = Question::find($this->next_question_id);
 
         // Broadcast the event
-        broadcast(new NextQuestion($game, $next_question));
+        broadcast(new NextQuestionUpdate($game, $next_question));
     }
 }

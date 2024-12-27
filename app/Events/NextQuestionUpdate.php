@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NextQuestion implements ShouldBroadcast,ShouldQueue
+class NextQuestionUpdate implements ShouldBroadcast,ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $gameObject;
