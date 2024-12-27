@@ -35,6 +35,8 @@ class GameFinished implements ShouldBroadcast
                     $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
                     $secs += $answeredQuestion->answered_at->diffInSeconds($answeredQuestion->sent_at);
             }
+            $user->experience += $answeredQuestionsScore;
+            $user->save();
             $scores[] = [
                 'user' => $user->name,
                 'score' => $answeredQuestionsScore,
@@ -59,7 +61,6 @@ class GameFinished implements ShouldBroadcast
         $this->gameObject->users->find($winner['id'])->update(['score' => $winner['score']]);
         $user = $this->gameObject->users->find($winner['id']);
         $user->coins = $user->coins + Setting::where('key', 'coins_per_game')->first()->value;
-        $user->save();
         return [
             'game' => $this->gameObject,
             'winner' => $winner,

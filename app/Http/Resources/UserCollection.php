@@ -21,6 +21,7 @@ class UserCollection extends JsonResource
             "email"         => $this->email,
             "avatar"        => $this->avatar_path,
             "coins"         => $this->coins,
+            "experience"    => $this->experience,
         ];
     }
 }
