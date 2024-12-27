@@ -30,8 +30,6 @@ class NextQuestion implements ShouldBroadcast,ShouldQueue
 
     public function broadcastWith()
     {
-        $this->nextQuestion->load('question.answers');
-        $this->nextQuestion->update(['sent_at'=>now()]);
         return [
             'previous_answer' => $this->previousAnswer,
             'next_question' => QuestionCollection::make($this->nextQuestion->question),
