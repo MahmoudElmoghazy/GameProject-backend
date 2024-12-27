@@ -100,6 +100,7 @@ class GameController extends Controller
                     broadcast(new CorrectAnswer($game,$question,$answer,$user));
                     $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
                     $game->current_question = $next_question->question_id;
+                    $game->save();
                     $next_question->load('question.answers');
                     $next_question->update(['sent_at'=>now()]);
                     broadcast(new NextQuestion($game, $next_question));
@@ -127,6 +128,8 @@ class GameController extends Controller
                         broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
                         $next_question->load('question.answers');
                         $next_question->update(['sent_at'=>now()]);
+                        $game->current_question = $next_question->question_id;
+                        $game->save();
                         broadcast(new NextQuestion($game, $next_question));
                     }else{
                         $game->status = 'finished';
