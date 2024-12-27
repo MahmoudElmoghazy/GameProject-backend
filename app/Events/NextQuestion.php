@@ -32,7 +32,7 @@ class NextQuestion implements ShouldBroadcast,ShouldQueue
     {
         return [
             'previous_answer' => $this->previousAnswer,
-            'next_question' => QuestionCollection::make($this->nextQuestion->question),
+            'next_question' => QuestionCollection::make($this->nextQuestion),
         ];
     }
 }
