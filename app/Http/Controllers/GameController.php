@@ -100,7 +100,8 @@ class GameController extends Controller
                     broadcast(new CorrectAnswer($game,$question,$answer,$user));
                     $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
                     $game->current_question = $next_question->question_id;
-                    broadcast(new PodcastNextQuestion($game));
+                    $next_question = $game->gameQuestions()->where('is_answered', false);
+                    broadcast(new NextQuestion($game, $next_question));
                     if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                         $game->status = 'finished';
                         $game->save();
@@ -123,7 +124,8 @@ class GameController extends Controller
                         $game->save();
                         $game->load('gameQuestions.question.answers');
                         broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
-                        broadcast(new PodcastNextQuestion($game));
+                        $next_question = $game->gameQuestions()->where('is_answered', false);
+                        broadcast(new NextQuestion($game, $next_question));
                     }else{
                         $game->status = 'finished';
                         $game->save();

@@ -31,8 +31,7 @@ class PodcastNextQuestion implements ShouldQueue
      */
     public function handle(): void
     {
-        $next_question = $this->game->gameQuestions()->where('is_answered', false);
-        broadcast(new NextQuestion($this->game, $next_question));
+
 /*        while ($unanswered_count > 0) {
             $no_of_secs_since_start = now()->diffInSeconds($this->game->created_at);
             $answered_question=$this->game->gameQuestions->where('is_answered', true)->count();
