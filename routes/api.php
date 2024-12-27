@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group( function () {
         Route::post('answer/question/{game}/{answer}/{question}','answerQuestion');
 
     });
+
     Route::controller( CategoryController::class)->group(function(){
         Route::get('/categories', 'list');
     });

@@ -70,4 +70,9 @@ class LoginController extends Controller
 
         return response()->json(['message' => 'Password reset successfully'], 200);
     }
+
+    public function showProfile(): UserCollection
+    {
+        return UserCollection::make(auth()->user());
+    }
 }

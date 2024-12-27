@@ -11,6 +11,7 @@ use App\Events\NextQuestion;
 use App\Events\PlayerJoined;
 use App\Events\PlayerLeft;
 use App\Events\WrongAnswer;
+use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\createGameRequest;
 use App\Http\Resources\GameCollection;
 use App\Jobs\PodcastNextQuestion;
@@ -86,27 +87,52 @@ class GameController extends Controller
         }
     }
 
-    public function answerQuestion(Game $game,Answer $answer,Question $question): JsonResponse
+    public function answerQuestion(Game $game,Question $question,AnswerQuestionRequest $request): JsonResponse
     {
         if($game->status == 'started'){
             if($game->current_question != $question->id){
                 return response()->json(['message'=>'This question is not the current question'], 400);
             }
             $user= auth()->user();
-            if($answer->id == $question->right_answer_id){
-                $game->gameQuestions()->where('question_id',$question->id)->update(['answered_at'=>now(),'answered_by'=>$user->id,'is_answered'=>true]);
-                broadcast(new CorrectAnswer($game,$question,$answer,$user));
-                $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
-                $game->current_question = $next_question->question_id;
-                Broadcast(new NextQuestion($game,$next_question))->delay(now()->addSeconds(5));
-                if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
-                    $game->status = 'finished';
-                    $game->save();
-                    broadcast(new GameFinished($game));
+            if($request->has('answer_id')){
+                $answer = Answer::find($request->answer_id);
+                if($answer->id == $question->right_answer_id){
+                    $game->gameQuestions()->where('question_id',$question->id)->update(['answered_at'=>now(),'answered_by'=>$user->id,'is_answered'=>true]);
+                    broadcast(new CorrectAnswer($game,$question,$answer,$user));
+                    $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
+                    $game->current_question = $next_question->question_id;
+                    Broadcast(new NextQuestion($game,$next_question))->delay(now()->addSeconds(5));
+                    if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
+                        $game->status = 'finished';
+                        $game->save();
+                        broadcast(new GameFinished($game));
+                    }
+                    return response()->json(['message'=>'correct answer','status'=>true], 200);
                 }
-                return response()->json(['message'=>'correct answer','status'=>true], 200);
+                broadcast(new WrongAnswer($game,$question,$answer,$user));
+            }else{
+                $no_of_secs_since_start = now()->diffInSeconds($this->game->created_at);
+                $answered_question=$game->gameQuestions->where('is_answered', true)->count();
+                $no_of_secs = $game->time_for_each_question;
+                if($no_of_secs_since_start >= $no_of_secs * $answered_question) {
+                    $game->gameQuestions()->where('question_id', $game->current_question)->update(['is_answered' => true]);
+                    $next_question = $game->gameQuestions()->where('is_answered', false)->first();
+                    if($next_question){
+                        $previous_question = Question::find($this->game->current_question);
+                        $previous_answer =$previous_question->right_answer_id;
+                        $game->current_question = $next_question->question_id;
+                        $game->save();
+                        $game->load('gameQuestions.question.answers');
+                        broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
+                    }else{
+                        $game->status = 'finished';
+                        $game->save();
+                        broadcast(new GameFinished($game));
+                        return response()->json(['message'=>'no more questions'], 400);
+                    }
+                }
             }
-            broadcast(new WrongAnswer($game,$question,$answer,$user));
+
             return response()->json(['message'=>'wrong answer','status'=>false], 200);
         }else{
             return response()->json(['message'=>'Game has not started yet or finished'], 400);

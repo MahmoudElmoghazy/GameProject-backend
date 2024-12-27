@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('activation_Token')->nullable();
             $table->string('avatar')->nullable()->default('avatars/default.png');
             $table->integer('coins')->default(0);
+            $table->integer('experience')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
