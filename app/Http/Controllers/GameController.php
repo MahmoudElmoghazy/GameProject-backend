@@ -123,6 +123,7 @@ class GameController extends Controller
                         $game->save();
                         $game->load('gameQuestions.question.answers');
                         broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
+                        PodcastNextQuestion::dispatch($game)->delay(now()->addSeconds(5));
                     }else{
                         $game->status = 'finished';
                         $game->save();
