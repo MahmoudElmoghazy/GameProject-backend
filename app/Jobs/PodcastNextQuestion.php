@@ -18,12 +18,14 @@ class PodcastNextQuestion implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $game;
+    public $next_question;
     /**
      * Create a new job instance.
      */
-    public function __construct(Game $game)
+    public function __construct(Game $game, Question $next_question)
     {
         $this->game= $game;
+        $this->next_question= $next_question;
     }
 
     /**
@@ -31,25 +33,6 @@ class PodcastNextQuestion implements ShouldQueue
      */
     public function handle(): void
     {
-        $next_question = $this->game->gameQuestions()->where('is_answered', false)->first();
-        broadcast(new NextQuestion($this->game, $next_question));
-/*        while ($unanswered_count > 0) {
-            $no_of_secs_since_start = now()->diffInSeconds($this->game->created_at);
-            $answered_question=$this->game->gameQuestions->where('is_answered', true)->count();
-            if($no_of_secs_since_start >= $no_of_secs * $answered_question){
-                $this->game->gameQuestions()->where('question_id', $this->game->current_question)->update(['is_answered'=>true]);
-                dump($next_question->count());
-                if($next_question->count() == 0){
-                    $this->game->status = 'finished';
-                    $this->game->save();
-                    broadcast(new GameFinished($this->game));
-                    break;
-                }
-
-                sleep(5);
-                sleep($no_of_secs);
-            }
-            $unanswered_count = $this->game->gameQuestions()->where('is_answered', false)->count();
-        }*/
+        broadcast(new NextQuestion($this->game, $this->next_question));
     }
 }
