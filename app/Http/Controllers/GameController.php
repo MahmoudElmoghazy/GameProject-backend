@@ -97,16 +97,18 @@ class GameController extends Controller
                 if($answer->id == $question->right_answer_id){
                     $game->gameQuestions()->where('question_id',$question->id)->update(['answered_at'=>now(),'answered_by'=>$user->id,'is_answered'=>true]);
                     broadcast(new CorrectAnswer($game,$question,$answer,$user));
-                    $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
-                    $game->current_question = $next_question->question_id;
-                    $game->save();
-                    $next_question->load('question.answers');
-                    $next_question->update(['sent_at'=>now()]);
-                    UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
                     if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                         $game->status = 'finished';
                         $game->save();
                         broadcast(new GameFinished($game));
+                    }
+                    $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
+                    if($next_question){
+                        $game->current_question = $next_question->question_id;
+                        $game->save();
+                        $next_question->load('question.answers');
+                        $next_question->update(['sent_at'=>now()]);
+                        UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
                     }
                     return response()->json(['data'=>['message'=>'correct answer','status'=>true]], 200);
                 }
