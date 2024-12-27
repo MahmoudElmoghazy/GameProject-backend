@@ -109,7 +109,7 @@ class GameController extends Controller
                         $game->save();
                         broadcast(new GameFinished($game));
                     }
-                    return response()->json(['message'=>'correct answer','status'=>true], 200);
+                    return response()->json(['data'=>['message'=>'correct answer','status'=>true]], 200);
                 }
                 broadcast(new WrongAnswer($game,$question,$answer,$user));
             }else{
@@ -140,7 +140,7 @@ class GameController extends Controller
                 }
             }
 
-            return response()->json(['message'=>'wrong answer','status'=>false], 200);
+            return response()->json(['data'=>['message'=>'wrong answer','status'=>false]], 200);
         }else{
             return response()->json(['message'=>'Game has not started yet or finished'], 400);
         }
