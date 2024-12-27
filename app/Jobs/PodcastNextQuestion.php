@@ -17,22 +17,22 @@ class PodcastNextQuestion implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $game;
-    public $next_question;
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(Game $game, Question $next_question)
+    public $game_id;
+    public $next_question_id;
+
+    public function __construct(int $game_id, int $next_question_id)
     {
-        $this->game= $game;
-        $this->next_question= $next_question;
+        $this->game_id = $game_id;
+        $this->next_question_id = $next_question_id;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        broadcast(new NextQuestion($this->game, $this->next_question));
+        // Retrieve the models inside the handle method
+        $game = Game::find($this->game_id);
+        $next_question = Question::find($this->next_question_id);
+
+        // Broadcast the event
+        broadcast(new NextQuestion($game, $next_question));
     }
 }
