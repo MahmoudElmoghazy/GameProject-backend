@@ -66,7 +66,6 @@ class GameController extends Controller
             $game->save();
             $game->load('gameQuestions.question.answers');
             broadcast(new GameStarted($game));
-            PodcastNextQuestion::dispatch($game);
         }
         return response()->json(['message' => 'joined successfully'], 200);
     }
