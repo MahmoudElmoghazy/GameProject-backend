@@ -100,7 +100,7 @@ class GameController extends Controller
                     broadcast(new CorrectAnswer($game,$question,$answer,$user));
                     $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
                     $game->current_question = $next_question->question_id;
-                    NextQuestion::dispatch($game, $next_question)->delay(now()->addSeconds(5));
+                    PodcastNextQuestion::dispatch($game)->delay(now()->addSeconds(5));
                     if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                         $game->status = 'finished';
                         $game->save();
