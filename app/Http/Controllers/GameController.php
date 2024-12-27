@@ -13,7 +13,7 @@ use App\Events\WrongAnswer;
 use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\createGameRequest;
 use App\Http\Resources\GameCollection;
-use App\Jobs\NextQuestionJob;
+use App\Jobs\UpdateNextQuestionJob;
 use App\Models\Game;
 use App\Models\Question;
 use App\Models\Answer;
@@ -102,7 +102,7 @@ class GameController extends Controller
                     $game->save();
                     $next_question->load('question.answers');
                     $next_question->update(['sent_at'=>now()]);
-                    NextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
+                    UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
                     if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                         $game->status = 'finished';
                         $game->save();
@@ -129,7 +129,7 @@ class GameController extends Controller
                         $next_question->update(['sent_at'=>now()]);
                         $game->current_question = $next_question->question_id;
                         $game->save();
-                        NextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
+                        UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
                         return response()->json(['data'=>['message'=>'question changed']], 200);
                     }else{
                         $game->status = 'finished';
