@@ -27,6 +27,7 @@ class GameStarted implements ShouldBroadcast
         $next_question = $this->gameObject->gameQuestions->where('is_answered',false)->first();
         $this->gameObject->current_question = $next_question->question->id;
         $this->gameObject->save();
+        $this->gameObject->gameQuestions()->where('question_id',$next_question->question->id)->update(['sent_at'=>now()]);
         return ['game' => GameCollection::make($this->gameObject),'next_question' => $next_question];
     }
 }
