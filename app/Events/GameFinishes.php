@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Events;
 
 use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -28,13 +30,15 @@ class GameFinishes implements ShouldBroadcast
         $scores = [];
         foreach ($this->gameObject->users as $user) {
             $answeredQuestionsScore = 0;
-            $answeredQuestions= $this->gameObject->gameQuestions()->where('answered_by', $user->id)->get();
+            $answeredQuestions = $this->gameObject->gameQuestions()->where('answered_by', $user->id)->get();
             $answeredQuestions->load('question.difficulty');
             $secs = 0;
             foreach ($answeredQuestions as $answeredQuestion) {
-                    $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
-                    dump($answeredQuestion);
-                    $secs += $answeredQuestion->answered_at->diffInSeconds($answeredQuestion->sent_at);
+                $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
+                dump($answeredQuestion);
+                $date = Carbon::parse($answeredQuestion->answered_at);
+                $secondsDifference = $date->diffInSeconds(Carbon::now());
+                $secs += $secondsDifference;
             }
             $user->experience += $answeredQuestionsScore;
             $user->save();
@@ -45,7 +49,7 @@ class GameFinishes implements ShouldBroadcast
                 'id' => $user->id,
             ];
         }
-        $winner=null;
+        $winner = null;
         foreach ($scores as $score) {
             if ($winner == null) {
                 $winner = $score;
