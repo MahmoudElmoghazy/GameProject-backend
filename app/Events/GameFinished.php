@@ -22,7 +22,7 @@ class GameFinished implements ShouldBroadcast
 
     public function broadcastOn(): Channel
     {
-        return new Channel('games-finished');
+        return new Channel('games-finished-'. $this->gameObject->id);
     }
 
     public function broadcastWith(): array
