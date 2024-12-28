@@ -108,6 +108,7 @@ class GameController extends Controller
                         $game->save();
                         $next_question->load('question.answers');
                         $next_question->update(['sent_at'=>now()]);
+                        dd($next_question);
                         UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
                     }
                     return response()->json(['data'=>['message'=>'correct answer','status'=>true]], 200);
@@ -129,6 +130,7 @@ class GameController extends Controller
                         broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
                         $next_question->load('question.answers');
                         $next_question->update(['sent_at'=>now()]);
+                        dd($next_question);
                         $game->current_question = $next_question->question_id;
                         $game->save();
                         UpdateNextQuestionJob::dispatch($game->id, $next_question->question->id)->delay(now()->addSeconds(5));
