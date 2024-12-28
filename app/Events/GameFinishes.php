@@ -35,7 +35,6 @@ class GameFinishes implements ShouldBroadcast
             $secs = 0;
             foreach ($answeredQuestions as $answeredQuestion) {
                 $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
-                dump($answeredQuestion);
                 $date = Carbon::parse($answeredQuestion->answered_at);
                 $secondsDifference = $date->diffInSeconds(Carbon::now());
                 $secs += $secondsDifference;
