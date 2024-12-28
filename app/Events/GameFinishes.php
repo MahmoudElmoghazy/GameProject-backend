@@ -33,7 +33,6 @@ class GameFinishes implements ShouldBroadcast
             $secs = 0;
             foreach ($answeredQuestions as $answeredQuestion) {
                     $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
-dd($answeredQuestions);
                     $secs += $answeredQuestion->answered_at->diffInSeconds($answeredQuestion->sent_at);
             }
             $user->experience += $answeredQuestionsScore;
