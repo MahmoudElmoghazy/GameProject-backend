@@ -42,32 +42,29 @@ class UpdateGameFinished implements ShouldBroadcast
             $user->experience += $answeredQuestionsScore;
             $user->save();
             $scores[] = [
-                'user' => $user->name,
+                'name' => $user->name,
+                'avatar' => $user->avatar_path,
                 'score' => $answeredQuestionsScore,
                 'time' => $secs,
                 'id' => $user->id,
+
             ];
+            $user->score = $answeredQuestionsScore;
+            $user->coins = $user->coins + Setting::where('key', 'coins_per_game')->first()->value;
+            $user->save();
         }
-        $winner = null;
-        foreach ($scores as $score) {
-            if ($winner == null) {
-                $winner = $score;
-            } else {
-                if ($score['score'] > $winner['score']) {
-                    $winner = $score;
-                } elseif ($score['score'] == $winner['score']) {
-                    if ($score['time'] < $winner['time']) {
-                        $winner = $score;
-                    }
-                }
+        //sort scores based on score and time
+        usort($scores, function ($a, $b) {
+            if ($a['score'] == $b['score']) {
+                return $a['time'] - $b['time'];
             }
-        }
-        $this->gameObject->users->find($winner['id'])->update(['score' => $winner['score']]);
-        $user = $this->gameObject->users->find($winner['id']);
-        $user->coins = $user->coins + Setting::where('key', 'coins_per_game')->first()->value;
+            return $b['score'] - $a['score'];
+        });
+        $winners = $scores;
+
         return [
             'game' => $this->gameObject,
-            'winner' => $winner,
+            'winners' => $winners,
         ];
     }
 }
