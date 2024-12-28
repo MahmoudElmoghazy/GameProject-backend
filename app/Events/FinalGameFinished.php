@@ -49,7 +49,7 @@ class FinalGameFinished implements ShouldBroadcast
                 'id' => $user->id,
 
             ];
-            $user->score = $answeredQuestionsScore;
+            $user->experience += $answeredQuestionsScore;
             $user->coins = $user->coins + Setting::where('key', 'coins_per_game')->first()->value;
             $user->save();
         }
