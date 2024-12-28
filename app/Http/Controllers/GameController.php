@@ -126,7 +126,8 @@ class GameController extends Controller
                         $game->current_question = $next_question->question_id;
                         $game->save();
                         $game->load('gameQuestions.question.answers');
-                        broadcast(new CorrectAnswer($game, $next_question,$previous_answer,null));
+                        $answer = Answer::find($previous_answer);
+                        broadcast(new CorrectAnswer($game, $next_question,$answer,null));
                         $next_question->load('question.answers');
                         $game->gameQuestions()->where('question_id',$question->id)->update(['sent_at'=>now()]);
                         $game->current_question = $next_question->question_id;
