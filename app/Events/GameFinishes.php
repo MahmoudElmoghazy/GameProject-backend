@@ -8,7 +8,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class GameFinishes implements ShouldBroadcast
+class GameFinished implements ShouldBroadcast
 {
     use SerializesModels;
 
