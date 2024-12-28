@@ -19,6 +19,7 @@ class GameQuestion extends Pivot
     protected $fillable = [
         'game_id',
         'question_id',
+        'sent_at'
     ];
 
     public function game(): BelongsTo
