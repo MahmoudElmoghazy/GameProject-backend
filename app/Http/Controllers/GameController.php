@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CorrectAnswer;
-use App\Events\FinalGameFinished;
+use App\Events\FinalGameFinishedUpdate;
 use App\Events\GameObjectCreated;
 use App\Events\GameObjectUpdated;
 use App\Events\GameStarted;
@@ -100,7 +100,7 @@ class GameController extends Controller
                     if($game->gameQuestions()->get()->where('is_answered',true)->count() == $game->no_of_questions){
                         $game->status = 'finished';
                         $game->save();
-                        broadcast(new FinalGameFinished($game));
+                        broadcast(new FinalGameFinishedUpdate($game));
                     }
                     $next_question = $game->gameQuestions()->get()->where('is_answered',false)->first();
                     if($next_question){
@@ -136,7 +136,7 @@ class GameController extends Controller
                     }else{
                         $game->status = 'finished';
                         $game->save();
-                        broadcast(new FinalGameFinished($game));
+                        broadcast(new FinalGameFinishedUpdate($game));
                         return response()->json(['message'=>'no more questions'], 400);
                     }
                 }
