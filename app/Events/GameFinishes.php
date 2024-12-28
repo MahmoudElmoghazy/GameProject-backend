@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class GameFinished implements ShouldBroadcast
+class GameFinishes implements ShouldBroadcast
 {
     use SerializesModels;
 
@@ -33,6 +33,7 @@ class GameFinished implements ShouldBroadcast
             $secs = 0;
             foreach ($answeredQuestions as $answeredQuestion) {
                     $answeredQuestionsScore += $answeredQuestion->question->difficulty->score;
+dd($answeredQuestions);
                     $secs += $answeredQuestion->answered_at->diffInSeconds($answeredQuestion->sent_at);
             }
             $user->experience += $answeredQuestionsScore;
